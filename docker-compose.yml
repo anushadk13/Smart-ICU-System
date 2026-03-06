@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  db:
+    image: timescale/timescaledb:latest-pg15
+    container_name: icu-db
+    environment:
+      - POSTGRES_USER=icu_user
+      - POSTGRES_PASSWORD=icu_password
+      - POSTGRES_DB=icu_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    container_name: icu-redis
+    ports:
+      - "6379:6379"
+
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: icu-mqtt
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./nginx/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  ml-service:
+    build: ./ml_service
+    container_name: icu-ml
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db
+
+  backend:
+    build: ./backend
+    container_name: icu-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://icu_user:icu_password@db/icu_db
+      - REDIS_URL=redis://redis:6379/0
+      - MQTT_HOST=mqtt-broker
+    depends_on:
+      - db
+      - redis
+      - mqtt-broker
+      - ml-service
+
+  iot-simulator:
+    build: ./iot_simulator
+    container_name: icu-simulator
+    environment:
+      - MQTT_HOST=mqtt-broker
+    depends_on:
+      - mqtt-broker
+
+  frontend:
+    build: ./frontend
+    container_name: icu-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
