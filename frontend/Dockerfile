@@ -14,8 +14,8 @@ FROM nginx:stable-alpine as production-stage
 
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# Custom nginx config to handle SPA routing if needed
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Custom nginx config to handle SPA routing
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

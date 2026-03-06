@@ -62,9 +62,18 @@ services:
   frontend:
     build: ./frontend
     container_name: icu-frontend
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: icu-proxy
     ports:
       - "3000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
+      - frontend
       - backend
 
 volumes:
