@@ -46,8 +46,23 @@ def on_message(client, userdata, msg):
 def start_mqtt(loop):
     global main_loop
     main_loop = loop
-    client = mqtt.Client()
+    
+    # Handle Paho MQTT 2.0+ Callback API Version
+    try:
+        # Version 2.0+ requirement
+        client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
+    except AttributeError:
+        # Fallback for version 1.x
+        client = mqtt.Client()
+
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect(MQTT_HOST, 1883, 60)
-    client.loop_start()
+    
+    try:
+        print(f"Connecting to MQTT broker at {MQTT_HOST}...")
+        client.connect(MQTT_HOST, 1883, 60)
+        client.loop_start()
+    except Exception as e:
+        print(f"Failed to connect to MQTT broker: {e}")
+        # In serverless environments, we don't want to crash the whole app
+        print("Continuing without MQTT listener...")
