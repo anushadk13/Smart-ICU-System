@@ -16,7 +16,10 @@ function PatientDetailPage() {
     const { id } = useParams<{ id: string }>();
     const [patient, setPatient] = useState<Patient | null>(null);
     const [history, setHistory] = useState<VitalReading[]>([]);
-    const { data: liveVital } = useWebSocket<VitalReading>(`/api/ws/vitals/${id}`);
+    const { data: liveVital, status: wsStatus } = useWebSocket<VitalReading>(
+        `/ws/vitals/${id}`,
+        `/api/vitals/${id}/latest`
+    );
 
     useEffect(() => {
         // Fetch patient info
@@ -106,9 +109,14 @@ function PatientDetailPage() {
                     <div className="glass-card p-6 min-h-[400px]">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="font-bold text-slate-400 uppercase text-xs tracking-widest">Live ECG & Waveform Analysis</h3>
-                            <div className="flex items-center gap-1.5 text-[10px] text-green-400 font-bold bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
-                                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-ping" />
-                                PRIMARY FEED
+                            <div className={`flex items-center gap-1.5 text-[10px] font-bold bg-white/5 px-2 py-0.5 rounded-full border border-white/10 ${wsStatus === 'open' ? 'text-green-400' :
+                                    wsStatus === 'polling' ? 'text-amber-400' : 'text-slate-500'
+                                }`}>
+                                <div className={`w-1.5 h-1.5 rounded-full ${wsStatus === 'open' ? 'bg-green-400 animate-ping' :
+                                        wsStatus === 'polling' ? 'bg-amber-400 animate-pulse' : 'bg-slate-500'
+                                    }`} />
+                                {wsStatus === 'open' ? 'LIVE DATA' :
+                                    wsStatus === 'polling' ? 'RESILIENT POLLING' : 'CONNECTING...'}
                             </div>
                         </div>
                         <div className="h-[300px] w-full">
