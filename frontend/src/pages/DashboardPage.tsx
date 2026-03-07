@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../api/client';
 import { Patient } from '../types';
 import PatientCard from '../components/PatientCard';
@@ -9,7 +9,7 @@ function DashboardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        api.get('/patients')
+        api.get('/api/patients')
             .then(res => setPatients(res.data))
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
