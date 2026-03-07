@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/client';
 import { Patient, VitalReading, Alert } from '../types';
@@ -16,13 +16,13 @@ function PatientDetailPage() {
     const { id } = useParams<{ id: string }>();
     const [patient, setPatient] = useState<Patient | null>(null);
     const [history, setHistory] = useState<VitalReading[]>([]);
-    const { data: liveVital } = useWebSocket<VitalReading>(`/ws/vitals/${id}`);
+    const { data: liveVital } = useWebSocket<VitalReading>(`/api/ws/vitals/${id}`);
 
     useEffect(() => {
         // Fetch patient info
-        api.get(`/patients/${id}`).then(res => setPatient(res.data));
+        api.get(`/api/patients/${id}`).then(res => setPatient(res.data));
         // Fetch initial history
-        api.get(`/vitals/${id}?limit=50`).then(res => setHistory(res.data.reverse()));
+        api.get(`/api/vitals/${id}?limit=50`).then(res => setHistory(res.data.reverse()));
     }, [id]);
 
     // Append live vital to history for the chart
