@@ -5,8 +5,19 @@ export function useWebSocket<T>(url: string) {
     const [status, setStatus] = useState<'connecting' | 'open' | 'closed'>('connecting');
 
     const connect = useCallback(() => {
-        const wsUrl = `ws://${window.location.host}${url}`;
-        const socket = new WebSocket(wsUrl);
+        const apiBase = import.meta.env.VITE_API_BASE_URL || '';
+        let wsBase = '';
+
+        if (apiBase.startsWith('http')) {
+            // Use the backend URL from env, swapping http for ws
+            wsBase = apiBase.replace(/^http/, 'ws');
+        } else {
+            // Local fallback
+            const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            wsBase = `${protocol}://${window.location.host}`;
+        }
+
+        const socket = new WebSocket(`${wsBase}${url}`);
 
         socket.onopen = () => setStatus('open');
         socket.onclose = () => {
