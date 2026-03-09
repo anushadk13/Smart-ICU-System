@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/client';
 import { Patient, VitalReading, Alert } from '../types';
-import { useWebSocket } from '../hooks/useWebSocket';
+import { useSSE } from '../hooks/useSSE';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     AreaChart, Area
@@ -16,8 +16,8 @@ function PatientDetailPage() {
     const { id } = useParams<{ id: string }>();
     const [patient, setPatient] = useState<Patient | null>(null);
     const [history, setHistory] = useState<VitalReading[]>([]);
-    const { data: liveVital, status: wsStatus } = useWebSocket<VitalReading>(
-        `/ws/vitals/${id}`,
+    const { data: liveVital, status: wsStatus } = useSSE<VitalReading>(
+        `/api/stream/vitals/${id}`,
         `/api/vitals/${id}/latest`
     );
 
@@ -110,10 +110,10 @@ function PatientDetailPage() {
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="font-bold text-slate-400 uppercase text-xs tracking-widest">Live ECG & Waveform Analysis</h3>
                             <div className={`flex items-center gap-1.5 text-[10px] font-bold bg-white/5 px-2 py-0.5 rounded-full border border-white/10 ${wsStatus === 'open' ? 'text-green-400' :
-                                    wsStatus === 'polling' ? 'text-amber-400' : 'text-slate-500'
+                                wsStatus === 'polling' ? 'text-amber-400' : 'text-slate-500'
                                 }`}>
                                 <div className={`w-1.5 h-1.5 rounded-full ${wsStatus === 'open' ? 'bg-green-400 animate-ping' :
-                                        wsStatus === 'polling' ? 'bg-amber-400 animate-pulse' : 'bg-slate-500'
+                                    wsStatus === 'polling' ? 'bg-amber-400 animate-pulse' : 'bg-slate-500'
                                     }`} />
                                 {wsStatus === 'open' ? 'LIVE DATA' :
                                     wsStatus === 'polling' ? 'RESILIENT POLLING' : 'CONNECTING...'}

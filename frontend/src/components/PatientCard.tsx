@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Patient, VitalReading } from '../types';
-import { useWebSocket } from '../hooks/useWebSocket';
+import { useSSE } from '../hooks/useSSE';
 import { Activity, Heart, Thermometer, Wind } from 'lucide-react';
 import { clsx } from 'clsx';
 
 function PatientCard({ patient }: { patient: Patient }) {
-    const { data: latestVitals } = useWebSocket<VitalReading>(`/ws/vitals/${patient.id}`);
+    const { data: latestVitals } = useSSE<VitalReading>(`/api/stream/vitals/${patient.id}`);
 
     const statusColors = {
         Stable: 'bg-green-500/10 text-green-400 border-green-500/20',
