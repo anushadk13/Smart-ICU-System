@@ -1,7 +1,10 @@
 import json
 import os
 import paho.mqtt.client as mqtt
-import redis
+try:
+    import redis
+except ImportError:
+    redis = None
 from app.db.session import AsyncSessionLocal
 from app.models import database
 from app.services.alert_engine import analyze_vitals
@@ -11,7 +14,10 @@ from typing import Dict
 MQTT_HOST = os.getenv("MQTT_HOST", "mqtt-broker")
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 
-redis_client = redis.from_url(REDIS_URL)
+if redis:
+    redis_client = redis.from_url(REDIS_URL)
+else:
+    redis_client = None
 main_loop = None
 
 async def process_message(message_data):
@@ -25,9 +31,10 @@ async def process_message(message_data):
         # Analyze with ML and potentially alert
         await analyze_vitals(message_data)
         
-        # Publish to Redis for WebSockets
-        patient_id = message_data.get("patient_id")
-        redis_client.publish(f"vitals:{patient_id}", json.dumps(message_data))
+        # Publish to Redis for WebSockets (if available)
+        if redis_client:
+            patient_id = message_data.get("patient_id")
+            redis_client.publish(f"vitals:{patient_id}", json.dumps(message_data))
     except Exception as e:
         print(f"Error in process_message: {e}")
 
