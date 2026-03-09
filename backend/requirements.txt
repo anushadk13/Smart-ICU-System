@@ -12,3 +12,4 @@ python-multipart==0.0.12
 httpx==0.28.0
 pandas==2.2.3
 numpy==1.26.4
+sse-starlette==1.2.1
