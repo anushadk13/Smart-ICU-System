@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import patients, vitals, alerts, auth, stream as sse_stream
-from app.websocket import stream as ws_stream
+# from app.websocket import stream as ws_stream  # WebSocket removed for Vercel
 from app.services.mqtt_listener import start_mqtt
 from app.db.session import init_db
 import asyncio
@@ -32,7 +32,7 @@ app.include_router(patients.router, prefix="/api/patients", tags=["patients"])
 app.include_router(vitals.router, prefix="/api/vitals", tags=["vitals"])
 app.include_router(alerts.router, prefix="/api/alerts", tags=["alerts"])
 app.include_router(sse_stream.router, prefix="/api", tags=["stream"])
-app.include_router(ws_stream.router, tags=["websocket"])
+# app.include_router(ws_stream.router, tags=["websocket"])  # WebSocket removed for Vercel
 
 @app.on_event("startup")
 async def startup_event():
