@@ -1,13 +1,16 @@
 🏥 Smart ICU & Remote Monitoring System
+
 A comprehensive ICU patient monitoring platform featuring real-time data streaming, ML-driven anomaly detection, and a clinical dashboard.
 
 🌐 Live Demo
 👉 https://smart-icu-system.netlify.app
+
 Frontend: Deployed on Netlify
 Backend: Deployed on Vercel
 Database: Neon (PostgreSQL)
 
 🧰 Tech Stack
+
 Frontend: React, TypeScript, Tailwind CSS, Recharts
 Backend: FastAPI, PostgreSQL (TimescaleDB), Redis
 IoT: MQTT (Mosquitto), Python Simulator
@@ -15,6 +18,7 @@ AI/ML: Scikit-learn (Anomaly Detection)
 Infrastructure: Docker, Docker Compose, Nginx
 
 🚀 Getting Started
+
 Clone the repository (if you haven't already).
 Start the services:
 docker-compose up --build
