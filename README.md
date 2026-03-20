@@ -3,13 +3,10 @@
 
 A real-time ICU monitoring platform that streams patient vitals, detects anomalies using machine learning, and provides an interactive clinical dashboard.
 
----
 
 ## 🌐 Live Demo
 
 🔗 [https://smart-icu-system.netlify.app](https://smart-icu-system.netlify.app)
-
----
 
 ## 🚀 Features
 
@@ -18,8 +15,6 @@ A real-time ICU monitoring platform that streams patient vitals, detects anomali
 * 📊 Interactive dashboard with charts
 * 🔐 Role-based access (Doctor, Nurse, Admin)
 * ⚡ Fast and scalable system using modern tech
-
----
 
 ## 🧰 Tech Stack
 
@@ -51,7 +46,6 @@ A real-time ICU monitoring platform that streams patient vitals, detects anomali
 * Docker Compose
 * Nginx
 
----
 
 ## ⚙️ Getting Started
 
@@ -74,8 +68,6 @@ docker-compose up --build
 http://localhost:3000
 ```
 
----
-
 ## 🔐 Default Credentials
 
 | Role   | Username | Password    |
@@ -84,15 +76,11 @@ http://localhost:3000
 | Nurse  | nurse    | password123 |
 | Admin  | admin    | password123 |
 
----
-
 ## 🌍 Deployment
 
 * **Frontend:** Netlify
 * **Backend:** Vercel
 * **Database:** Neon PostgreSQL
-
----
 
 ## 📈 Future Improvements
 
